@@ -15,7 +15,7 @@ class USPFoundManager:
     @st.cache_resource
     def _init_connection(_self):
         return psycopg2.connect(
-            host="localhost", database="usp_found", user="admin", password="poli_usp"
+            host="127.0.0.1", port=5433, database="usp_found", user="admin", password="poli_usp"
         )
 
     def upload_image_to_gcs(self, file, folder="itens"):
