@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:16
+    container_name: usp_found_db
+    restart: always
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=poli_usp
+      - POSTGRES_DB=usp_found
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init_db:/docker-entrypoint-initdb.d # Scripts SQL iniciais
