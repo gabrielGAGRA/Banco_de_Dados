@@ -1,60 +1,61 @@
-# USPerdidos - Plataforma de Achados e Perdidos da POLI-USP
+﻿# USPerdidos - Plataforma de Achados e Perdidos 
 
-Plataforma de gerenciamento de itens achados e perdidos da Universidade de São Paulo (USPerdidos). Este repositório contém a infraestrutura do banco de dados (PostgreSQL via Docker), a interface de acesso à nuvem (Google Cloud Storage) e os scripts de população inicial.
-
----
-
-## Arquitetura do Projeto
-
-O projeto está dividido nas seguintes camadas físicas e lógicas:
-
-- **Banco de Dados Local (`docker-compose.yml`)**: Instância isolada do PostgreSQL rodando na porta local `5432`.
-- **Armazenamento em Nuvem (GCP)**: Bucket no Google Cloud Storage para hospedagem das fotos dos itens.
-- **Camada de Infra (`src/`)**: Códigos em Python responsáveis por integrar e conectar o servidor de Front-end (Streamlit) com a infraestrutura (Banco + Nuvem) em uma operação atômica.
-
-### Estrutura de Pastas
-
-```text
- Banco_de_Dados/
- ┣  db/                       <-- Scripts de SQL e Massa Inicial
- ┃ ┣  init_db/
- ┃ ┃ ┗  schema.sql            (DDL de Criação)
- ┃ ┗  seed_db.py              (Gera Carga Fake de Teste)
- ┣  docs/                     <-- Documentações
- ┣  src/                      <-- Core da Aplicação
- ┃ ┗  infra_manager.py        (API de GCS + PostgreSQL)
- ┣  tests/                    <-- Validação e Testes
- ┃ ┗  test_infra.py           (Inicializa DDL e testa as conexões)
- ┣  .streamlit/
- ┃ ┗  secrets.toml            (Credenciais - Ignorado no Git)
- ┣  docker-compose.yml        (Definição do Container do BD)
- ┗  requirements.txt          (Dependências Python)
-```
+A plataforma de gerenciamento de itens achados e perdidos da Universidade de São Paulo (USPerdidos). Este repositório foca na infraestrutura de Dados e Engenharia de Software, englobando a camada de persistência (PostgreSQL via Docker), infraestrutura de nuvem para objetos estáticos (Google Cloud Storage) e gerenciadores de API (Data Access Layer) para a interface front-end (Streamlit).
 
 ---
 
-##  Como Iniciar o Projeto 
+## 🏗️ Arquitetura do Projeto
+
+Desenvolvido sob o paradigma de arquitetura em camadas e utilizando boas práticas de Cloud e Data Engineering, o projeto divide-se em:
+
+- **Banco de Dados Relacional**: Instância local do PostgreSQL provisionada via docker-compose.yml, atuando como Single Source of Truth para metadados, controle de transações e regras de negócio.
+- **Armazenamento de Objetos (GCP)**: Bucket no Google Cloud Storage (GCS) configurado com *Uniform bucket-level access* para hospedagem e distribuição em larga escala das imagens associadas aos itens.
+- **Data Access Layer (src/)**: Gerenciador Python central (infra_manager.py) aplicando os padrões **Singleton** e **Connection Pooling**, responsável pela orquestração de transações atômicas distribuídas entre banco relacional e Cloud.
+
+### 🗂️ Estrutura Físico-Lógica
+
+`	ext
+Banco_de_Dados/
+├── db/                       # Artefatos do Banco de Dados
+│   ├── init_db/
+│   │   └── schema.sql        # DDL (Definição de Tipos, Tabelas, Constraints e Índices)
+│   └── queries.sql           # DML (Views e consultas estratégicas/analíticas)
+├── src/                      # Regras de Integração e Infraestrutura
+│   └── infra_manager.py      # DAL (Gerenciador de Conexões e GCS Uploads)
+├── tests/                    # Validações, Seed de Banco e Idempotência
+│   ├── seed_db.py            # Geração massiva de dados falsos (Faker) para homologação
+│   └── test_infra.py         # Valida DDL, conexão de rede e testes unitários de banco
+├── ARCHITECTURE.md           # Decisões de Arquitetura e Engenharia (Novo)
+├── docker-compose.yml        # Provisionamento Local (Container do BD PostgreSQL)
+└── requirements.txt          # Gerenciamento de dependências (Python)
+`
+
+---
+
+## 🚀 Como Iniciar o Projeto (Setup de Ambiente)
 
 **1. Instale as Dependências Python:**
-Certifique-se de estar usando um ambiente virtual e execute:
-```bash
+Sempre atue isolado em um ambiente virtual (.venv).
+`ash
+python -m venv .venv
+source .venv/Scripts/activate  # No macOS/Linux use .venv/bin/activate
 pip install -r requirements.txt
-```
+`
 
-**2. Configure as Credenciais:**
-O projeto necessita do arquivo `.streamlit/secrets.toml` na raiz com as chaves corretas do PostgreSQL local e da Service Account do Google Cloud.
+**2. Configure Credenciais Injetadas (Secrets):**
+Para obedecer às práticas de segurança e evitar chave no repositório (*hardcoded secrets*), configure o .streamlit/secrets.toml com os pares chave-valor para conexão com o Postgres (host, port, db, user, pass) e as configurações da Service Account do GCP.
 
-**3. Suba o Banco de Dados (Docker):**
-Com o Docker Desktop aberto, na raiz do projeto, rode:
-```bash
+**3. Provisione a Infraestrutura em Container:**
+Instancie o serviço via Docker para garantir que o ambiente seja replicável.
+`ash
 docker-compose up -d
-```
+`
 
-**4. Crie as Tabelas e Popule os Dados:**
-O banco levanta vazio. Execute os scripts sequencialmente para montar e popular o banco:
-```bash
-python tests/test_infra.py   # Cria o DDL físico (Tabelas)
-python db/seed_db.py         # Insere dezenas de itens/avisos fakes para teste
-```
+**4. DDL e Geração de Massa (Seed Idempotente):**
+Execute os scripts analíticos e de carga na raiz:
+`ash
+python tests/test_infra.py   # Valida a conexão DDL/GCS e cria a estrutura física
+python tests/seed_db.py      # Aplica a idempotência e gera massa falsa (Fake Data)
+`
 
----
+> **Atenção:** Os dados inseridos pelo seed_db.py realizam TRUNCATE CASCADE automaticamente para que o setup seja 100% idempotente (perfeito para CI/CD).
