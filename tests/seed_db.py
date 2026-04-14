@@ -16,6 +16,27 @@ UNIDADES = [
     ),
     ("Labs Digitais", "Prédio da Elétrica, Bloco C", "labs@usp.br"),
     ("Sala ao lado de Circuitos", "Prédio da Elétrica, Bloco A", "circuitos@usp.br"),
+    ("Escola Politécnica", "Engenharia (Prédios: Civil, Elétrica, Mecânica, Biênio, etc.)", "poli@usp.br"),
+    ("Faculdade de Filosofia, Letras e Ciências Humanas", "História, Letras, Geografia, Sociais, Filosofia", "fflch@usp.br"),
+    ("Faculdade de Economia, Administração e Contabilidade", "Administração, Economia e Contabilidade", "fea@usp.br"),
+    ("Instituto de Matemática e Estatística", "Matemática, Computação e Estatística", "ime@usp.br"),
+    ("Instituto de Física", "Física", "if@usp.br"),
+    ("Instituto de Química", "Química", "iq@usp.br"),
+    ("Faculdade de Arquitetura e Urbanismo", "Arquitetura e Design", "fau@usp.br"),
+    ("Escola de Comunicações e Artes", "Artes, Jornalismo, Editoração", "eca@usp.br"),
+    ("Faculdade de Educação", "Pedagogia e Licenciaturas", "fe@usp.br"),
+    ("Instituto de Biociências", "Biologia", "ib@usp.br"),
+    ("Instituto de Psicologia", "Psicologia", "ip@usp.br"),
+    ("Instituto de Ciências Biomédicas", "Prédios I, II, III e IV", "icb@usp.br"),
+    ("Faculdade de Odontologia", "Odontologia", "fo@usp.br"),
+    ("Fac. de Medicina Veterinária e Zootecnia", "Veterinária", "fmvz@usp.br"),
+    ("Escola de Educação Física e Esporte", "Esportes", "eefe@usp.br"),
+    ("Outros Institutos", "Astronomia, Geociências, Oceanografia, Relações Internacionais, Energia", "outros@usp.br"),
+    ("Faculdade de Direito", "Largo São Francisco, Direito", "fd@usp.br"),
+    ("Faculdade de Saúde Pública", "Saúde Pública e Nutrição", "fsp@usp.br"),
+    ("Escola de Enfermagem", "Enfermagem e Cuidados de Saúde", "ee@usp.br"),
+    ("Instituto de Medicina Tropical de São Paulo", "Doenças Tropicais e Infecciosas", "imt@usp.br"),
+    ("Instituto de Estudos Brasileiros", "Cultura e História do Brasil", "ieb@usp.br"),
 ]
 
 CATEGORIAS = [
@@ -24,9 +45,15 @@ CATEGORIAS = [
     ("Vestuário",),
     ("Estojos",),
     ("Garrafas",),
+    ("Mochilas e Bolsas",),
+    ("Chaves e Chaveiros",),
+    ("Livros e Cadernos",),
+    ("Óculos",),
+    ("Guarda-chuvas",),
+    ("Cartões (USP, Bancário, Bilhete)",),
 ]
 
-CORES = ["PRETO", "BRANCO", "AZUL", "VERMELHO", "OUTROS"]
+CORES = ["PRETO", "BRANCO", "AZUL", "VERMELHO", "VERDE", "AMARELO", "CINZA", "MARROM", "ROSA", "ROXO", "LARANJA", "OUTROS"]
 STATUS = ["Pendente", "Devolvido", "Descartado"]
 
 
@@ -116,6 +143,21 @@ def seed_database():
             id_unidade = random.choice(ids_unidades) if tem_unidade else None
             local_opcional = fake.street_name() if not tem_unidade else None
 
+            descricoes_possiveis = [
+                "Perdi durante a aula, acho que ficou na carteira.",
+                "Deixei no bandejão na hora do almoço.",
+                "Esqueci na sala de estudos da biblioteca.",
+                "Caiu do meu bolso no corredor principal do prédio.",
+                "Acho que deixei no banheiro do térreo.",
+                "Perdi a caminho do ponto do circular.",
+                "Esqueci na mesa da lanchonete da vivência.",
+                "Ficou na tomada do saguão e quando voltei não estava.",
+                "Deixei na praça enquanto conversava com meus amigos.",
+                "Deve ter caído da minha mochila perto da portaria.",
+                "Tinha deixado em cima da mesa e quando voltei alguém tinha levado.",
+                "Perdi no laboratório de informática, estava no fundo da sala."
+            ]
+
             avisos_data.append(
                 (
                     random.choice(ids_categorias),
@@ -123,7 +165,7 @@ def seed_database():
                     local_opcional,
                     fake.date_between(start_date="-30d", end_date="today"),
                     f"https://storage.googleapis.com/usperdidos/mock_aluno_{fake.uuid4()}.jpg",
-                    fake.paragraph(nb_sentences=2),  # O que o aluno diz que perdeu
+                    random.choice(descricoes_possiveis),  # O que o aluno diz que perdeu
                     fake.name(),
                     fake.random_int(min=10000000, max=99999999),
                 )
