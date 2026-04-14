@@ -16,11 +16,10 @@ CREATE TABLE UNIDADE (
     contato_responsavel VARCHAR(100)
 );
 
--- Categorias com Regra de Descarte 
+-- Categorias
 CREATE TABLE CATEGORIA (
     id_categoria SERIAL PRIMARY KEY,
-    nome_categoria VARCHAR(50) NOT NULL,
-    prazo_descarte INTEGER NOT NULL -- dias para o "ciclo de vida" do dado
+    nome_categoria VARCHAR(50) NOT NULL
 );
 
 -- Itens Oficiais (Módulo Secretaria)
@@ -118,8 +117,7 @@ WHERE i.NUSP_retirada IS NOT NULL OR i.status = 'Devolvido';
 CREATE OR REPLACE VIEW vw_estatistica_inventario AS
 SELECT
     c.nome_categoria,
-    COUNT(i.id_item) AS quantidade_achada,
-    c.prazo_descarte
+    COUNT(i.id_item) AS quantidade_achada
 FROM CATEGORIA c
 LEFT JOIN ITEM i ON c.id_categoria = i.id_categoria
-GROUP BY c.nome_categoria, c.prazo_descarte;
+GROUP BY c.nome_categoria;

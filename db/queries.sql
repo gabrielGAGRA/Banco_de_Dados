@@ -42,7 +42,6 @@ ORDER BY
  i.status;
 
 -- Consulta 3: Filtragem Multimídia (Itens com foto por categoria)
--- [CORREÇÃO]: O nome do campo na tabela ITEM conforme schema DDL é `gcs_url` em vez de `foto_item`.
 SELECT
  i.id_item,
  c.nome_categoria,
@@ -86,14 +85,12 @@ ORDER BY
 -- Consulta 5: Estatística de Inventário (Contagem por tipo de objeto)
 SELECT
  c.nome_categoria,
- COUNT(i.id_item) AS quantidade_achada,
- c.prazo_descarte
+ COUNT(i.id_item) AS quantidade_achada
 FROM
  CATEGORIA c
 LEFT JOIN
  ITEM i ON c.id_categoria = i.id_categoria
 GROUP BY
- c.nome_categoria,
- c.prazo_descarte
+ c.nome_categoria
 ORDER BY
  quantidade_achada DESC;

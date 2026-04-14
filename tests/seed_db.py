@@ -21,11 +21,11 @@ UNIDADES = [
 ]
 
 CATEGORIAS = [
-    ("Eletrônicos", 90),  # 90 dias de prazo
-    ("Documentos", 180),
-    ("Vestuário", 30),
-    ("Estojos", 30),
-    ("Garrafas", 15),
+    ("Eletrônicos",),
+    ("Documentos",),
+    ("Vestuário",),
+    ("Estojos",),
+    ("Garrafas",),
 ]
 
 CORES = ["PRETO", "BRANCO", "AZUL", "VERMELHO", "OUTROS"]
@@ -66,8 +66,8 @@ def seed_database():
         # 2. Popular CATEGORIAS
         cur.executemany(
             """
-            INSERT INTO CATEGORIA (nome_categoria, prazo_descarte) 
-            VALUES (%s, %s)
+            INSERT INTO CATEGORIA (nome_categoria) 
+            VALUES (%s)
         """,
             CATEGORIAS,
         )

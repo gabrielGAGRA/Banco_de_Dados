@@ -72,7 +72,7 @@ def test_integration():
             row_un = cur.fetchone()
             id_un = row_un[0] if row_un else None
             cur.execute(
-                "INSERT INTO CATEGORIA (nome_categoria, prazo_descarte) VALUES ('Eletrônicos Teste', 30) RETURNING id_categoria;"
+                "INSERT INTO CATEGORIA (nome_categoria) VALUES ('Eletrônicos Teste') RETURNING id_categoria;"
             )
             row_cat = cur.fetchone()
             id_cat = row_cat[0] if row_cat else None
