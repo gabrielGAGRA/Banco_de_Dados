@@ -106,7 +106,7 @@ def seed_database():
 
         cur.executemany(
             """
-            INSERT INTO ITEM (id_unidade, id_categoria, descricao, cor_principal, marca_modelo, gcs_url_foto, data_achado, status, NUSP_retirada)
+            INSERT INTO ITEM (id_unidade, id_categoria, descricao, cor_principal, marca_modelo, gcs_url, data_achado, status, NUSP_retirada)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """,
             itens_data,
@@ -135,7 +135,7 @@ def seed_database():
 
         cur.executemany(
             """
-            INSERT INTO AVISO_PERDIDO (id_categoria, id_unidade, local_perda_opcional, data_achado, gcs_url_foto, descricao_aluno, nome_usuario, NUSP_usuario)
+            INSERT INTO AVISO_PERDIDO (id_categoria, id_unidade, local_perda_opcional, data_achado, gcs_url, descricao_aluno, nome_usuario, NUSP_usuario)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """,
             avisos_data,
@@ -148,7 +148,7 @@ def seed_database():
 
         cur.execute(
             """
-            INSERT INTO ITEM (id_unidade, id_categoria, descricao, cor_principal, marca_modelo, gcs_url_foto, status)
+            INSERT INTO ITEM (id_unidade, id_categoria, descricao, cor_principal, marca_modelo, gcs_url, status)
             VALUES (%s, %s, 'Estojo preto com 3 canetas bic', 'PRETO', 'Faber-Castell', 'https://storage.../estojo.jpg', 'Pendente')
         """,
             (id_unidade_match, id_categoria_match),
