@@ -33,17 +33,3 @@ st.dataframe(itens_blindados)
 # Usa esse método passando o ID para obter todas a informações (Incluindo FOTO) do item
 dados_da_secretaria = infra.get_item_detail_for_admin(id_do_item)
 ```
-
----
-
-## Manual para Banco e Auditoria (David)
-
-Seu ambiente roda 100% no Docker.
-- **Client**: DBeaver, PGAdmin, DataGrip, VS Code SQLTools, etc.
-- **Host**: `127.0.0.1` (localhost)
-- **Porta**: `5432`
-- **Database**: `usperdidos`
-- **User**: `admin`
-- **Password**: `poli_usp_2026`
-
-**Nota Técnica:** As fotos das tabelas (`gcs_url_foto`) referenciam links diretos da Google Cloud. Na montagem de views complexas, você pode usar os registros do banco integrados à URL nas listagens. Para limpar as massas rapidamente caso um script seu quebre os relatórios ou duplique coisas acidentalmente, apenas rode o `db/seed_db.py` que ele realiza um `TRUNCATE CASCADE` resetando todas as informações antes de aplicar dados limpos de teste e mantendo o index.
