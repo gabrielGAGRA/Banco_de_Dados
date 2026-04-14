@@ -4,11 +4,11 @@ from psycopg2 import pool
 from contextlib import contextmanager
 from google.cloud import storage
 from google.oauth2 import service_account
-import uuid  # Importante para nomes únicos
+import uuid
 
 
 class USPerdidosInfra:
-    @st.cache_resource  # Garante que a conexão seja única (Singleton)
+    @st.cache_resource
     def _get_connection_pool(_self):
         return pool.SimpleConnectionPool(
             1,
@@ -26,7 +26,6 @@ class USPerdidosInfra:
             st.secrets["gcp_service_account"]
         )
         self.storage_client = storage.Client(credentials=creds)
-        # O nome do seu bucket agora é puxado direto do secrets.toml em [gcp][bucket_name]
         self.bucket = self.storage_client.bucket(st.secrets["gcp"]["bucket_name"])
 
     @contextmanager
@@ -39,16 +38,15 @@ class USPerdidosInfra:
             self.pool.putconn(conn)
 
     def upload_and_save(self, item_data, image_file):
-        # Gerar nome único para evitar colisões no bucket
         ext = image_file.name.split(".")[-1]
         unique_name = f"itens/{uuid.uuid4()}.{ext}"
 
         blob = self.bucket.blob(unique_name)
         blob.upload_from_string(image_file.getvalue(), content_type=image_file.type)
 
-        # Como o GCP está com "Uniform bucket-level access" ativado,
-        # a permissão de público deve ser dada na aba "Permissões" do Bucket no GCP
-        # e não por arquivo (removido blob.make_public()).
+        # NOTE: GCP bucket has "Uniform bucket-level access" enabled.
+        # Object ACLs like make_public() are restricted.
+        # Public permission is granted in the GCP Console Bucket Permissions instead.
         gcs_url = blob.public_url
 
         try:
@@ -69,7 +67,7 @@ class USPerdidosInfra:
                     conn.commit()
             return gcs_url
         except Exception as e:
-            # Em caso de falha no banco, apaga o arquivo do GCS (Transação Distribuída Simulada)
+            # NOTE: Simulate distributed transaction rollback. Clean up orphaned GCS object if DB insertion fails.
             blob.delete()
             raise e
 

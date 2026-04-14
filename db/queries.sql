@@ -1,9 +1,7 @@
 -- ==============================================================================
 -- Consultas Estratégicas - USPerdidos
--- Papel DML (Admin/DBA)
 -- ==============================================================================
 
--- Consulta 1: Busca de correspondência entre avisos e achados
 SELECT
  ap.nome_usuario,
  ap.NUSP_usuario,
@@ -25,7 +23,6 @@ WHERE
 ORDER BY
  i.data_achado DESC;
 
--- Consulta 2: Relatório de Itens por Unidade e Status
 SELECT
  u.nome_unidade,
  i.status,
@@ -41,7 +38,6 @@ ORDER BY
  u.nome_unidade,
  i.status;
 
--- Consulta 3: Filtragem Multimídia (Itens com foto por categoria)
 SELECT
  i.id_item,
  c.nome_categoria,
@@ -62,7 +58,6 @@ ORDER BY
  c.nome_categoria,
  i.data_achado DESC;
 
--- Consulta 4: Auditoria de Devoluções (Histórico de transações)
 SELECT
  i.id_item,
  c.nome_categoria,
@@ -82,7 +77,6 @@ WHERE
 ORDER BY
  i.data_achado ASC;
 
--- Consulta 5: Estatística de Inventário (Contagem por tipo de objeto)
 SELECT
  c.nome_categoria,
  COUNT(i.id_item) AS quantidade_achada

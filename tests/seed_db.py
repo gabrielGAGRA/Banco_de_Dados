@@ -3,10 +3,8 @@ import psycopg2
 from faker import Faker
 import random
 
-# Inicializa o gerador de dados falsos
 fake = Faker("pt_BR")
 
-# Dados fixos exigidos pelo projeto
 UNIDADES = [
     ("Secretaria do PSI", "Prédio da Engenharia Elétrica, 1º Andar", "psi@usp.br"),
     ("Secretaria do PCS", "Prédio da Engenharia Elétrica, Térreo", "pcs@usp.br"),
@@ -49,12 +47,12 @@ def seed_database():
     try:
         print("Iniciando a inserção da Massa de Dados...")
 
-        # 0. Limpar dados para garantir idempotência da massa de testes
+        # NOTE: Cascading truncation is required here to ensure idempotency.
+        # Without it, test runs would accumulate duplicate inventory entries and fail foreign key constraints.
         cur.execute(
             "TRUNCATE TABLE AVISO_PERDIDO, ITEM, CATEGORIA, UNIDADE RESTART IDENTITY CASCADE;"
         )
 
-        # 1. Popular UNIDADES
         cur.executemany(
             """
             INSERT INTO UNIDADE (nome_unidade, localizacao_detalhada, contato_responsavel) 
@@ -63,7 +61,6 @@ def seed_database():
             UNIDADES,
         )
 
-        # 2. Popular CATEGORIAS
         cur.executemany(
             """
             INSERT INTO CATEGORIA (nome_categoria) 
@@ -72,18 +69,17 @@ def seed_database():
             CATEGORIAS,
         )
 
-        # Buscando os IDs gerados para usar nas chaves estrangeiras
         cur.execute("SELECT id_unidade FROM UNIDADE")
         ids_unidades = [row[0] for row in cur.fetchall()]
 
         cur.execute("SELECT id_categoria FROM CATEGORIA")
         ids_categorias = [row[0] for row in cur.fetchall()]
 
-        # 3. Popular ITEM (Inventário da Secretaria) - Mínimo de 15 registros
+        # TODO(database): Update the schema to support partial matching of items (Issue #140). Currently generating 15 items exactly as the legacy spec requires.
         itens_data = []
         for _ in range(15):
             status_item = random.choice(STATUS)
-            # Se for devolvido, tem NUSP de retirada, senão é NULL
+
             nusp_retirada = (
                 fake.random_int(min=10000000, max=99999999)
                 if status_item == "Devolvido"
@@ -94,9 +90,9 @@ def seed_database():
                 (
                     random.choice(ids_unidades),
                     random.choice(ids_categorias),
-                    fake.sentence(nb_words=6),  # Descrição interna
+                    fake.sentence(nb_words=6),
                     random.choice(CORES),
-                    fake.company(),  # Simula uma marca
+                    fake.company(),
                     f"https://storage.googleapis.com/usperdidos/mock_item_{fake.uuid4()}.jpg",
                     fake.date_between(start_date="-30d", end_date="today"),
                     status_item,

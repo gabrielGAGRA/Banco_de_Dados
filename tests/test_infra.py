@@ -3,7 +3,6 @@ import psycopg2
 import sys
 import os
 
-# Ajusta o path para encontrar o infra_manager dentro de /src
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from src.infra_manager import USPerdidosInfra
 import io
@@ -23,7 +22,6 @@ def run_ddl():
         cur = conn.cursor()
 
         print("2. Lendo e aplicando 'db/init_db/schema.sql' (DDL)...")
-        # Ajustado para ler o arquivo da nova pasta
         schema_path = os.path.abspath(
             os.path.join(os.path.dirname(__file__), "..", "db", "init_db", "schema.sql")
         )
@@ -50,7 +48,8 @@ def test_integration():
         )
         return
 
-    # Criando um "arquivo" falso imitando o uploader do Streamlit
+    # NOTE: Streamlit's UploadedFile is required by infra_manager.upload_and_save(),
+    # so we mock it using BytesIO for testing without the UI.
     class MockUploadedFile(io.BytesIO):
         def __init__(self, content, name, type):
             super().__init__(content)

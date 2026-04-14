@@ -1,14 +1,11 @@
--- Limpando objetos existentes para evitar erros de criação duplicada (Idempotência)
 DROP TABLE IF EXISTS AVISO_PERDIDO CASCADE;
 DROP TABLE IF EXISTS ITEM CASCADE;
 DROP TABLE IF EXISTS CATEGORIA CASCADE;
 DROP TABLE IF EXISTS UNIDADE CASCADE;
 DROP TYPE IF EXISTS status_item CASCADE;
 
--- Criando Tipos para integridade (Prática de Engenharia)
 CREATE TYPE status_item AS ENUM ('Pendente', 'Devolvido', 'Descartado');
 
--- Tabela de Unidades (Onde o item está fisicamente)
 CREATE TABLE UNIDADE (
     id_unidade SERIAL PRIMARY KEY,
     nome_unidade VARCHAR(100) NOT NULL,
@@ -16,13 +13,11 @@ CREATE TABLE UNIDADE (
     contato_responsavel VARCHAR(100)
 );
 
--- Categorias
 CREATE TABLE CATEGORIA (
     id_categoria SERIAL PRIMARY KEY,
     nome_categoria VARCHAR(50) NOT NULL
 );
 
--- Itens Oficiais (Módulo Secretaria)
 CREATE TABLE ITEM (
     id_item SERIAL PRIMARY KEY,
     id_unidade INTEGER REFERENCES UNIDADE(id_unidade) ON DELETE RESTRICT,
@@ -37,11 +32,10 @@ CREATE TABLE ITEM (
     data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Crowdsourcing (Módulo Aluno)
 CREATE TABLE AVISO_PERDIDO (
     id_aviso SERIAL PRIMARY KEY,
     id_categoria INTEGER REFERENCES CATEGORIA(id_categoria) ON DELETE RESTRICT,
-    id_unidade INTEGER REFERENCES UNIDADE(id_unidade) ON DELETE SET NULL, -- Cardinalidade opcional
+    id_unidade INTEGER REFERENCES UNIDADE(id_unidade) ON DELETE SET NULL,
     local_perda_opcional VARCHAR(100),
     data_achado DATE,
     gcs_url VARCHAR(255),
