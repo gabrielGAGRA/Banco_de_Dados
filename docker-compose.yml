@@ -12,3 +12,7 @@ services:
       - "127.0.0.1:5432:5432"
     volumes:
       - ./init_db:/docker-entrypoint-initdb.d # Scripts SQL iniciais
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

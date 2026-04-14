@@ -64,16 +64,23 @@ def test_integration():
     print(
         "4. Inserindo dados base (Unidade e Categoria) para contornar as Foreign Keys..."
     )
-    with infra.conn.cursor() as cur:
-        cur.execute(
-            "INSERT INTO UNIDADE (nome_unidade, localizacao_detalhada) VALUES ('Prédio da Administração', 'Térreo') RETURNING id_unidade;"
-        )
-        id_un = cur.fetchone()[0]
-        cur.execute(
-            "INSERT INTO CATEGORIA (nome_categoria, prazo_descarte) VALUES ('Eletrônicos Teste', 30) RETURNING id_categoria;"
-        )
-        id_cat = cur.fetchone()[0]
-        infra.conn.commit()
+    with infra.get_db_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "INSERT INTO UNIDADE (nome_unidade, localizacao_detalhada) VALUES ('Prédio da Administração', 'Térreo') RETURNING id_unidade;"
+            )
+            row_un = cur.fetchone()
+            id_un = row_un[0] if row_un else None
+            cur.execute(
+                "INSERT INTO CATEGORIA (nome_categoria, prazo_descarte) VALUES ('Eletrônicos Teste', 30) RETURNING id_categoria;"
+            )
+            row_cat = cur.fetchone()
+            id_cat = row_cat[0] if row_cat else None
+            conn.commit()
+
+    if id_un is None or id_cat is None:
+        print("❌ Erro ao inserir dados base (RETURNING falhou).")
+        return
 
     item_data = {
         "unidade": id_un,

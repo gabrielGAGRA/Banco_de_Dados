@@ -26,22 +26,23 @@ CREATE TABLE CATEGORIA (
 -- Itens Oficiais (Módulo Secretaria)
 CREATE TABLE ITEM (
     id_item SERIAL PRIMARY KEY,
-    id_unidade INTEGER REFERENCES UNIDADE(id_unidade),
-    id_categoria INTEGER REFERENCES CATEGORIA(id_categoria),
+    id_unidade INTEGER REFERENCES UNIDADE(id_unidade) ON DELETE RESTRICT,
+    id_categoria INTEGER REFERENCES CATEGORIA(id_categoria) ON DELETE RESTRICT,
     descricao TEXT,
     cor_principal VARCHAR(30),
     marca_modelo VARCHAR(50),
     gcs_url VARCHAR(255),
     data_achado DATE DEFAULT CURRENT_DATE,
     status status_item DEFAULT 'Pendente', 
-    NUSP_retirada INTEGER DEFAULT NULL
+    NUSP_retirada INTEGER DEFAULT NULL,
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Crowdsourcing (Módulo Aluno)
 CREATE TABLE AVISO_PERDIDO (
     id_aviso SERIAL PRIMARY KEY,
-    id_categoria INTEGER REFERENCES CATEGORIA(id_categoria),
-    id_unidade INTEGER REFERENCES UNIDADE(id_unidade), -- Cardinalidade opcional
+    id_categoria INTEGER REFERENCES CATEGORIA(id_categoria) ON DELETE RESTRICT,
+    id_unidade INTEGER REFERENCES UNIDADE(id_unidade) ON DELETE SET NULL, -- Cardinalidade opcional
     local_perda_opcional VARCHAR(100),
     data_achado DATE,
     gcs_url VARCHAR(255),
@@ -50,6 +51,14 @@ CREATE TABLE AVISO_PERDIDO (
     NUSP_usuario INTEGER,
     data_postagem TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- ==============================================================================
+-- INDEXES DE PERFORMANCE
+-- ==============================================================================
+CREATE INDEX idx_item_categoria ON ITEM(id_categoria);
+CREATE INDEX idx_item_unidade ON ITEM(id_unidade);
+CREATE INDEX idx_aviso_categoria ON AVISO_PERDIDO(id_categoria);
+CREATE INDEX idx_aviso_unidade ON AVISO_PERDIDO(id_unidade);
 
 -- ==============================================================================
 -- VIEWS DE RELATÓRIOS E CONSULTAS
