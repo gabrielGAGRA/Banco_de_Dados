@@ -32,7 +32,7 @@ class USPerdidosManager:
     def register_item(self, data):
         """Método que o Fernando (Secretaria) vai chamar"""
         query = """
-            INSERT INTO ITEM (id_unidade, id_categoria, descricao, gcs_url_foto)
+            INSERT INTO ITEM (id_unidade, id_categoria, descricao, gcs_url)
             VALUES (%s, %s, %s, %s)
         """
         with self.conn.cursor() as cur:
