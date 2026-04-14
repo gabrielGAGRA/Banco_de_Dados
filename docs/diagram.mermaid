@@ -1,0 +1,25 @@
+graph TD
+    subgraph "Sistemas Externos"
+        D[Docker Desktop]
+        G[Google Cloud Storage]
+    end
+
+    subgraph "Configurações (Espelho)"
+        DC[docker-compose.yml]
+        S[secrets.toml]
+    end
+
+    subgraph "Seu Código (A Aplicação)"
+        IM[infra_manager.py]
+        SD[seed_db.py]
+    end
+
+    DC -- "Define o Banco local" --> D
+    S -- "Lê Credenciais para o Python" --> IM
+    S -- "Lê Credenciais para o Python" --> SD
+    
+    IM -- "Conecta" --> D
+    IM -- "Envia Fotos" --> G
+    
+    style DC fill:#f9f,stroke:#333
+    style S fill:#bbf,stroke:#333

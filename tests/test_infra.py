@@ -1,6 +1,11 @@
 import streamlit as st
 import psycopg2
-from infra_manager import USPFoundInfra
+import sys
+import os
+
+# Ajusta o path para encontrar o infra_manager dentro de /src
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from src.infra_manager import USPerdidosInfra
 import io
 
 
@@ -17,8 +22,12 @@ def run_ddl():
         conn.autocommit = True
         cur = conn.cursor()
 
-        print("2. Lendo e aplicando 'schema.sql' (DDL)...")
-        with open("schema.sql", "r", encoding="utf-8") as f:
+        print("2. Lendo e aplicando 'db/init_db/schema.sql' (DDL)...")
+        # Ajustado para ler o arquivo da nova pasta
+        schema_path = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "..", "db", "init_db", "schema.sql")
+        )
+        with open(schema_path, "r", encoding="utf-8") as f:
             sql = f.read()
             cur.execute(sql)
         print("✅ DDL aplicado com sucesso! Banco estruturado.")
@@ -32,7 +41,7 @@ def run_ddl():
 def test_integration():
     print("\n3. Iniciando Teste de Integração (GCS + PostgreSQL)...")
     try:
-        infra = USPFoundInfra()
+        infra = USPerdidosInfra()
     except Exception as e:
         print(f"⚠️ Atenção: Falha de autenticação com o Google Cloud (GCS).")
         print(f"Detalhe: {e}")

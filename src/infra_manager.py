@@ -5,7 +5,7 @@ from google.oauth2 import service_account
 import uuid  # Importante para nomes únicos
 
 
-class USPFoundInfra:
+class USPerdidosInfra:
     @st.cache_resource  # Garante que a conexão seja única (Singleton)
     def _get_connection(_self):
         return psycopg2.connect(

@@ -4,13 +4,13 @@ from google.cloud import storage
 import uuid
 
 
-class USPFoundManager:
+class USPerdidosManager:
     def __init__(self):
         # Configuração do PostgreSQL
         self.conn = self._init_connection()
         # Configuração do Google Cloud Storage
         self.storage_client = storage.Client.from_service_account_json("sua-chave.json")
-        self.bucket = self.storage_client.bucket("usp-found-storage")
+        self.bucket = self.storage_client.bucket("usperdidos")
 
     @st.cache_resource
     def _init_connection(_self):
@@ -19,7 +19,7 @@ class USPFoundManager:
             port=st.secrets["postgres"]["port"],
             database=st.secrets["postgres"]["database"],
             user=st.secrets["postgres"]["user"],
-            password=st.secrets["postgres"]["password"]
+            password=st.secrets["postgres"]["password"],
         )
 
     def upload_image_to_gcs(self, file, folder="itens"):
