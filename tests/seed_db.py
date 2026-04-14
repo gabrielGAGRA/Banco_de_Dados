@@ -9,11 +9,7 @@ UNIDADES = [
     ("Secretaria do PSI", "Prédio da Engenharia Elétrica, 1º Andar", "psi@usp.br"),
     ("Secretaria do PCS", "Prédio da Engenharia Elétrica, Térreo", "pcs@usp.br"),
     ("CEE", "Prédio da Engenharia Elétrica, Vivência", "cee@usp.br"),
-    (
-        "Portaria da Entrada",
-        "Entrada principal do prédio da Elétrica",
-        "portaria.eletrica@usp.br",
-    ),
+    ("Portaria da Entrada", "Entrada principal do prédio da Elétrica", "portaria.eletrica@usp.br"),
     ("Labs Digitais", "Prédio da Elétrica, Bloco C", "labs@usp.br"),
     ("Sala ao lado de Circuitos", "Prédio da Elétrica, Bloco A", "circuitos@usp.br"),
     ("Escola Politécnica", "Engenharia (Prédios: Civil, Elétrica, Mecânica, Biênio, etc.)", "poli@usp.br"),

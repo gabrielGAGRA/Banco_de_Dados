@@ -85,6 +85,8 @@ def test_integration():
         "unidade": id_un,
         "categoria": id_cat,
         "desc": "Item inserido automaticamente pelo teste de infraestrutura.",
+        "cor_principal": "PRETO",
+        "marca_modelo": "InfraCorp Teste",
     }
 
     print("5. Executando 'upload_and_save' (GCS -> Postgres)...")

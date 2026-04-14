@@ -54,13 +54,18 @@ class USPerdidosInfra:
                 with conn.cursor() as cur:
                     cur.execute(
                         """
-                        INSERT INTO ITEM (id_unidade, id_categoria, descricao, gcs_url, status) 
-                        VALUES (%s, %s, %s, %s, 'Pendente')
+                        INSERT INTO ITEM (
+                            id_unidade, id_categoria, descricao, 
+                            cor_principal, marca_modelo, gcs_url, status
+                        ) 
+                        VALUES (%s, %s, %s, %s, %s, %s, 'Pendente')
                         """,
                         (
-                            item_data["unidade"],
-                            item_data["categoria"],
-                            item_data["desc"],
+                            item_data.get("unidade"),
+                            item_data.get("categoria"),
+                            item_data.get("desc"),
+                            item_data.get("cor_principal"),
+                            item_data.get("marca_modelo"),
                             gcs_url,
                         ),
                     )
