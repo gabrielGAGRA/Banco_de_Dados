@@ -1,12 +1,14 @@
+version: '3.8'
 services:
   db:
     image: postgres:16
-    container_name: usperdidos
+    container_name: usp_found_db
+    restart: always
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: poli_usp_2026
-      POSTGRES_DB: usperdidos
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=poli_usp
+      - POSTGRES_DB=usp_found
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5433:5432"
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data
+      - ./init_db:/docker-entrypoint-initdb.d # Scripts SQL iniciais
